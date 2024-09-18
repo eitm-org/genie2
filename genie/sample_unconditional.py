@@ -121,6 +121,29 @@ class UnconditionalRunner(MultiProcessor):
 
 
 def main(args):
+	
+	# Create parser
+	parser = argparse.ArgumentParser()
+
+	# Define model arguments
+	parser.add_argument('--name', type=str, help='Model name', required=True)
+	parser.add_argument('--epoch', type=int, help='Model epoch', required=True)
+	parser.add_argument('--rootdir', type=str, help='Root directory', default='../workflow_1/results')
+
+	# Define sampling arguments
+	parser.add_argument('--scale', type=float, help='Sampling noise scale', required=True)
+	parser.add_argument('--outdir', type=str, help='Output directory', required=True)
+	parser.add_argument('--num_samples', type=int, help='Number of samples per length', default=5)
+	parser.add_argument('--batch_size', type=int, help='Batch size', default=4)
+	parser.add_argument('--min_length', type=int, help='Minimum sequence length', default=50)
+	parser.add_argument('--max_length', type=int, help='Maximum sequence length', default=256)
+	parser.add_argument('--length_step', type=int, help='Length step size', default=1)
+	
+	# Define environment arguments
+	parser.add_argument('--num_devices', type=int, help='Number of GPU devices', default=1)
+	parser.add_argument('--sequential_order', action='store_true', help='Run in increasing order of length')
+
+	args = parser.parse_args(args)
 
 	# Define multiprocessing runner
 	runner = UnconditionalRunner()
