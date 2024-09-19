@@ -13,6 +13,6 @@ setup(
             'wandb',
             'tensorboard',
             'pytorch_lightning',
-            'genie'
+            'genie.*'
       ],
 )
