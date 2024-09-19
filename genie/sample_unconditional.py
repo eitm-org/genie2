@@ -1,5 +1,6 @@
 import argparse
 from tqdm import tqdm
+from omegaconf import OmegaConf
 
 from genie.sampler.unconditional import UnconditionalSampler
 from genie.utils.multiprocessor import MultiProcessor
@@ -120,30 +121,33 @@ class UnconditionalRunner(MultiProcessor):
 				num_samples -= batch_size
 
 
-def main(args):
-	
+def run_unconditional(config_file):
+
+	# Read configuration file
+	conf = OmegaConf.load(config_file)
+
 	# Create parser
 	parser = argparse.ArgumentParser()
 
 	# Define model arguments
-	parser.add_argument('--name', type=str, help='Model name', required=True)
-	parser.add_argument('--epoch', type=int, help='Model epoch', required=True)
-	parser.add_argument('--rootdir', type=str, help='Root directory', default='../workflow_1/results')
+	parser.add_argument('--name', type=str, help='Model name', default=conf.genie2.name)
+	parser.add_argument('--epoch', type=int, help='Model epoch', default=conf.genie2.epoch)
+	parser.add_argument('--rootdir', type=str, help='Root directory', default=conf.genie2.rootdir)
 
 	# Define sampling arguments
-	parser.add_argument('--scale', type=float, help='Sampling noise scale', required=True)
-	parser.add_argument('--outdir', type=str, help='Output directory', required=True)
-	parser.add_argument('--num_samples', type=int, help='Number of samples per length', default=5)
-	parser.add_argument('--batch_size', type=int, help='Batch size', default=4)
-	parser.add_argument('--min_length', type=int, help='Minimum sequence length', default=50)
-	parser.add_argument('--max_length', type=int, help='Maximum sequence length', default=256)
-	parser.add_argument('--length_step', type=int, help='Length step size', default=1)
+	parser.add_argument('--scale', type=float, help='Sampling noise scale', default=conf.genie2.scale)
+	parser.add_argument('--outdir', type=str, help='Output directory', default=conf.genie2.outdir)
+	parser.add_argument('--num_samples', type=int, help='Number of samples per length', default=conf.genie2.num_samples)
+	parser.add_argument('--batch_size', type=int, help='Batch size', default=conf.genie2.batch_size)
+	parser.add_argument('--min_length', type=int, help='Minimum sequence length', default=conf.genie2.min_length)
+	parser.add_argument('--max_length', type=int, help='Maximum sequence length', default=conf.genie2.max_length)
+	parser.add_argument('--length_step', type=int, help='Length step size', default=conf.genie2.length_step)
 	
 	# Define environment arguments
-	parser.add_argument('--num_devices', type=int, help='Number of GPU devices', default=1)
-	parser.add_argument('--sequential_order', action='store_true', help='Run in increasing order of length')
+	parser.add_argument('--num_devices', type=int, help='Number of GPU devices', default=conf.genie2.num_devices)
+	parser.add_argument('--sequential_order', action='store_true', help='Run in increasing order of length', default=conf.genie2.sequential_order)
 
-	args = parser.parse_args(args)
+	args, unknown = parser.parse_known_args()
 
 	# Define multiprocessing runner
 	runner = UnconditionalRunner()
