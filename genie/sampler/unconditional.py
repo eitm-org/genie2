@@ -17,8 +17,7 @@ class UnconditionalSampler(BaseSampler):
 
 	def on_sample_start(self, params):
 		"""
-		Set up an output directory if necessary before sampling starts. The directory 
-		is named 'pdbs', where each file stores the generated structure in a PDB format.
+		Set up an output directory if necessary before sampling starts. 
 
 		Args:
 			params:
@@ -30,7 +29,7 @@ class UnconditionalSampler(BaseSampler):
 					-	offset: offset for distinguishing between batches
 					-	length: target sequence length.
 		"""
-		pdbs_dir = os.path.join(params['outdir'], 'pdbs')
+		pdbs_dir = os.path.join(params['outdir'])
 		if not os.path.exists(pdbs_dir):
 			os.makedirs(pdbs_dir)
 
@@ -85,7 +84,7 @@ class UnconditionalSampler(BaseSampler):
 
 	def on_sample_end(self, params, list_np_features):
 		"""
-		Save generated structures (in a directory named 'pdbs').
+		Save generated structures.
 
 		Args:
 			params:
@@ -131,7 +130,7 @@ class UnconditionalSampler(BaseSampler):
 		for i, np_features in enumerate(list_np_features):
 			name = '{}_{}'.format(params['prefix'], params['offset'] + i)
 			output_pdb_filepath = os.path.join(
-				params['outdir'], 'pdbs', 
+				params['outdir'],
 				'{}.pdb'.format(name)
 			)
 			save_np_features_to_pdb(np_features, output_pdb_filepath)
