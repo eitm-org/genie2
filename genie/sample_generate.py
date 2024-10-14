@@ -6,10 +6,9 @@ from omegaconf import OmegaConf
 from genie.sample_unconditional import run_unconditional
 from genie.sample_scaffold import run_scaffold
 
-def generate(config_file, results_folder):
+def generate(config_file):
 
     conf = OmegaConf.load(config_file)
-    conf.genie2.outdir = results_folder
 
     if conf.genie2.structures != None:
         # motif scaffolding!
