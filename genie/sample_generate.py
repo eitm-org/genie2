@@ -10,13 +10,8 @@ def generate(config_file):
 
     conf = OmegaConf.load(config_file)
 
-    if conf.genie2.structures != None:
-        # motif scaffolding!
-
-        # parse structures, append text to pdb file, save in results folder
-
+    if conf.genie2.model_type == 'scaffold':
         run_scaffold(config_file)
-
-    else:
+    elif conf.genie2.model_type == 'unconditional':
         # unconditional generatiom
         run_unconditional(config_file)

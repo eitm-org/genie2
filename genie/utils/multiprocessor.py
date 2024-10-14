@@ -1,6 +1,7 @@
 import os
 import random 
 import math
+import pickle
 from multiprocessing import Process
 from abc import ABC, abstractmethod
 
@@ -68,7 +69,6 @@ class MultiProcessor(ABC):
 			sequential_order:
 				Flag on whether to shuffle tasks.
 		"""
-
 
 		# Create tasks
 		tasks = self.create_tasks(params)

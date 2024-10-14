@@ -97,7 +97,7 @@ class ScaffoldSampler(BaseSampler):
 				-	interface_mask:
 						[N] deprecated and set to all zeros.
 		"""
-		return create_np_features_from_motif_pdb(params['filepath'])
+		return create_np_features_from_motif_pdb(params['filepath'], params['structures'])
 
 	def on_sample_end(self, params, list_np_features):
 		"""
@@ -164,6 +164,7 @@ class ScaffoldSampler(BaseSampler):
 			)
 			save_motif_pdb(
 				params['filepath'],
+				params['structures'],
 				np_features['fixed_sequence_mask'],
 				output_motif_pdb_filepath
 			)

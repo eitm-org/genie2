@@ -1,7 +1,8 @@
 import numpy as np
+import json
 
 
-def load_motif_spec(filepath):
+def load_motif_spec(structures):
 	"""
 	Load motif specification file.
 
@@ -25,36 +26,43 @@ def load_motif_spec(filepath):
 			-	max_total_length:
 				Maximum number of residues for the generated structure.
 	"""
-	with open(filepath) as file:
-		structures = []
-		for line in file:
-			if line.startswith('REMARK 999 INPUT'):
-				if line[18] == ' ':
-					structures.append({
-						'type': 'scaffold',
-						'min_length': int(line[19:23]),
-						'max_length': int(line[23:27])
-					})
-				else:
-					structures.append({
-						'type': 'motif',
-						'chain': line[18],
-						'start_index': int(line[19:23]),
-						'end_index': int(line[23:27]),
-						'group': line[28] if len(line) > 28 and line[28] != ' ' else 'A'
-					})
-			if line.startswith('REMARK 999 NAME'):
-				name = line[18:]
-			if line.startswith('REMARK 999 MINIMUM TOTAL LENGTH'):
-				min_total_length = int(line[37:])
-			if line.startswith('REMARK 999 MAXIMUM TOTAL LENGTH'):
-				max_total_length = int(line[37:])
-	return {
-		'name': name,
-		'structures': structures,
-		'min_total_length': min_total_length,
-		'max_total_length': max_total_length
-	}
+
+	with open(structures) as f: 
+		struct_dict = f.read()
+	
+	struct_dict = json.loads(struct_dict) 
+	return struct_dict
+
+	# with open(filepath) as file:
+	# 	structures = []
+	# 	for line in file:
+	# 		if line.startswith('REMARK 999 INPUT'):
+	# 			if line[18] == ' ':
+	# 				structures.append({
+	# 					'type': 'scaffold',
+	# 					'min_length': int(line[19:23]),
+	# 					'max_length': int(line[23:27])
+	# 				})
+	# 			else:
+	# 				structures.append({
+	# 					'type': 'motif',
+	# 					'chain': line[18],
+	# 					'start_index': int(line[19:23]),
+	# 					'end_index': int(line[23:27]),
+	# 					'group': line[28] if len(line) > 28 and line[28] != ' ' else 'A'
+	# 				})
+	# 		if line.startswith('REMARK 999 NAME'):
+	# 			name = line[18:]
+	# 		if line.startswith('REMARK 999 MINIMUM TOTAL LENGTH'):
+	# 			min_total_length = int(line[37:])
+	# 		if line.startswith('REMARK 999 MAXIMUM TOTAL LENGTH'):
+	# 			max_total_length = int(line[37:])
+	# return {
+	# 	'name': name,
+	# 	'structures': structures,
+	# 	'min_total_length': min_total_length,
+	# 	'max_total_length': max_total_length
+	# }
 
 def sample_motif_mask(spec):
 	"""
@@ -128,7 +136,7 @@ def sample_motif_mask(spec):
 		'group': np.array(motif_groups).astype(int)
 	}
 
-def save_motif_pdb(spec_filepath, mask, pdb_filepath):
+def save_motif_pdb(spec_filepath, spec_dict, mask, pdb_filepath):
 	"""
 	Save motif information as a PDB file.
 
@@ -146,7 +154,7 @@ def save_motif_pdb(spec_filepath, mask, pdb_filepath):
 		return ' ' * (length - len(string)) + string
 
 	# Parse residue index in motif spec file
-	spec = load_motif_spec(spec_filepath)
+	spec = load_motif_spec(spec_dict)
 	residue_index_spec = []
 	for structure in spec['structures']:
 		if structure['type'] == 'motif':
@@ -156,7 +164,7 @@ def save_motif_pdb(spec_filepath, mask, pdb_filepath):
 					i,
 					structure['group']
 				))
-
+	print(mask)
 	# Parse residue index in motif pdb file
 	residue_index_pdb = [i + 1 for i, elt in enumerate(mask) if elt]
 	assert len(residue_index_pdb) == len(residue_index_spec)

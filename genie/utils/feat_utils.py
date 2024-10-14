@@ -92,7 +92,7 @@ def create_np_features_from_pdb(filepath):
 
 	return np_features
 
-def create_np_features_from_motif_pdb(filepath):
+def create_np_features_from_motif_pdb(filepath, structures):
 	"""
 	Create a feature dictionary from a motif specification file. This involves
 	loading the motif specification file and sampling a motif configuration 
@@ -104,7 +104,7 @@ def create_np_features_from_motif_pdb(filepath):
 	"""
 
 	# Parse
-	spec = load_motif_spec(filepath)
+	spec = load_motif_spec(structures)
 	motif_seqs, motif_coords = parse_pdb(filepath)
 	motif_aatype = np.concatenate(motif_seqs)
 	motif_aatype = np.eye(len(RESTYPES))[motif_aatype] # one-hot encoding
