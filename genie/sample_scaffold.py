@@ -2,6 +2,7 @@ import os
 import glob
 import argparse
 from tqdm import tqdm
+from omegaconf import OmegaConf
 
 from genie.sampler.scaffold import ScaffoldSampler
 from genie.utils.multiprocessor import MultiProcessor
@@ -141,6 +142,38 @@ def main(args):
 	# Define multiprocessor runner
 	runner = ScaffoldRunner()
 
+	# Run
+	runner.run(vars(args), args.num_devices)
+
+def run_scaffold(config_file):
+
+	conf = OmegaConf.load(config_file)
+
+	# Create parser
+	parser = argparse.ArgumentParser()
+
+	# Define model arguments
+	parser.add_argument('--name', type=str, help='Model name', required=True)
+	parser.add_argument('--epoch', type=int, help='Model epoch', required=True)
+	parser.add_argument('--rootdir', type=str, help='Root directory', default='results')
+
+	# Define sampling arguments
+	parser.add_argument('--scale', type=float, help='Sampling noise scale', required=True)
+	parser.add_argument('--outdir', type=str, help='Output directory', required=True)
+	parser.add_argument('--strength', type=float, help='Sampling classifier-free strength', default=0)
+	parser.add_argument('--num_samples', type=int, help='Number of samples per length', default=100)
+	parser.add_argument('--batch_size', type=int, help='Batch size', default=4)
+	parser.add_argument('--motif_name', type=str, help='Motif name', default=None)
+	parser.add_argument('--datadir', type=str, help='Data directory', default='data/design25')
+	
+	# Define environment arguments
+	parser.add_argument('--num_devices', type=int, help='Number of GPU devices', default=1)
+
+	args, unknown = parser.parse_known_args()
+
+	# Define multiprocessing runner
+	runner = ScaffoldRunner()
+	
 	# Run
 	runner.run(vars(args), args.num_devices)
 
