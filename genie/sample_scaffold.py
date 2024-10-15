@@ -14,7 +14,7 @@ class ScaffoldRunner(MultiProcessor):
 	A multi-processing runner for sampling scaffold given motif specifications.
 	"""
 
-	def create_tasks(self, params):
+	def create_tasks(self, args):
 		"""
 		Define a set of tasks to be distributed across processes.
 
@@ -33,12 +33,12 @@ class ScaffoldRunner(MultiProcessor):
 		tasks = []
 
 		# Define motif names
-		if args.motif_name is not None:
-			motif_names = [args.motif_name]
+		if args["motif_name"] is not None:
+			motif_names = args["motif_name"]
 		else:
 			motif_names = [
 				filepath.split('/')[-1].split('.')[0]
-				for filepath in glob.glob(os.path.join(args.datadir, '*.pdb'))
+				for filepath in glob.glob(os.path.join(args["data_dir"], '*.pdb'))
 			]
 
 		# Create tasks
@@ -175,11 +175,8 @@ def run_scaffold(config_file):
 
 	args, unknown = parser.parse_known_args()
 
-	# Define multiprocessing runner
-	runner = ScaffoldRunner()
-	
 	# Run
-	runner.run(vars(args), args.num_devices)
+	main(args)
 
 
 if __name__ == '__main__':
@@ -208,5 +205,4 @@ if __name__ == '__main__':
 	# Parse arguments
 	args = parser.parse_args()
 
-	# Run
-	main(args)
+	

@@ -164,7 +164,7 @@ def save_motif_pdb(spec_filepath, spec_dict, mask, pdb_filepath):
 					i,
 					structure['group']
 				))
-	print(mask)
+
 	# Parse residue index in motif pdb file
 	residue_index_pdb = [i + 1 for i, elt in enumerate(mask) if elt]
 	assert len(residue_index_pdb) == len(residue_index_spec)
