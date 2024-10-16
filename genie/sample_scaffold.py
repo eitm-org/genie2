@@ -38,7 +38,7 @@ class ScaffoldRunner(MultiProcessor):
 		else:
 			motif_names = [
 				filepath.split('/')[-1].split('.')[0]
-				for filepath in glob.glob(os.path.join(args["data_dir"], '*.pdb'))
+				for filepath in glob.glob(os.path.join(args["datadir"], '*.pdb'))
 			]
 
 		# Create tasks
@@ -101,10 +101,7 @@ class ScaffoldRunner(MultiProcessor):
 		for task in tqdm(tasks, desc=device):
 
 			# Define output directory
-			outdir = os.path.join(
-				constants['outdir'],
-				'motif={}'.format(task['motif_name'])
-			)
+			outdir = constants['outdir']
 
 			# Initialize
 			num_samples = constants['num_samples']
@@ -205,4 +202,5 @@ if __name__ == '__main__':
 	# Parse arguments
 	args = parser.parse_args()
 
-	
+	# Run
+	main(args)
