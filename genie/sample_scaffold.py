@@ -168,7 +168,7 @@ def run_scaffold(config_file):
 	parser.add_argument('--num_devices', type=int, help='Number of GPU devices', default=conf.genie2.num_devices)
 
 	# Define structures for motif scaffolding
-	parser.add_argument('--structures', type=str, help='Location of motif specification file', default=conf.genie2.structures)
+	parser.add_argument('--structures', type=str, help='Contig map', default=conf.genie2.contigs)
 
 	args, unknown = parser.parse_known_args()
 
@@ -197,7 +197,7 @@ if __name__ == '__main__':
 	
 	# Define environment arguments
 	parser.add_argument('--num_devices', type=int, help='Number of GPU devices', default=1)
-	parser.add_argument('--structures', type=str, help='Location of motif specification file', default='/home/mubale/salt/inputs/genie2/structures.txt')
+	parser.add_argument('--structures', type=str, help='Contig map for motif specification', default=None)
 
 	# Parse arguments
 	args = parser.parse_args()

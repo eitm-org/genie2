@@ -1,8 +1,8 @@
 import numpy as np
 import json
+import re
 
-
-def load_motif_spec(structures):
+def load_motif_spec(input_str):
 	"""
 	Load motif specification file.
 
@@ -27,11 +27,50 @@ def load_motif_spec(structures):
 				Maximum number of residues for the generated structure.
 	"""
 
-	with open(structures) as f: 
-		struct_dict = f.read()
-	
-	struct_dict = json.loads(struct_dict) 
-	return struct_dict
+	input_ranges = input_str.split('/')
+	structures = []
+
+	total_min_length = 0
+	total_max_length = 0
+
+	# Match chain letters
+	pattern = re.compile(r'([A-Z])?(\d+)-(\d+)')
+
+	for r in input_ranges:
+		match = pattern.match(r)
+		if match:
+			chain, start, end = match.groups()
+			start = int(start)
+			end = int(end)
+			if chain:
+				# Add motif with chain info
+				structures.append({
+					"type": "motif",
+					"chain": chain,
+					"start_index": start,
+					"end_index": end,
+					"group": chain
+				})
+			else:
+				# Add scaffold without chain info
+				structures.append({
+					"type": "scaffold",
+					"min_length": start,
+					"max_length": end
+				})
+			# For now, default max and min to the actual total values
+			total_min_length += start
+			total_max_length += end
+
+	# Build the final dictionary
+	result = {
+		"name": "motif",
+		"structures": structures,
+		"min_total_length": total_min_length,
+		"max_total_length": total_max_length
+	}
+
+	return result
 
 	# with open(filepath) as file:
 	# 	structures = []
