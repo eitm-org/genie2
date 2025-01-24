@@ -168,7 +168,7 @@ def run_scaffold(config_file):
 	parser.add_argument('--num_devices', type=int, help='Number of GPU devices', default=conf.genie2.num_devices)
 
 	# Define structures for motif scaffolding
-	parser.add_argument('--structures', type=str, help='Contig map', default=conf.genie2.contigs)
+	parser.add_argument('--structures', type=str, help='Contig map', default="".join(conf.genie2.contigs))
 
 	args, unknown = parser.parse_known_args()
 
